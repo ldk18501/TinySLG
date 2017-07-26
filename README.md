@@ -6,3 +6,35 @@
 
 另外，
 需要完成源码编译方式安装Nginx的练习
+
+
+#coding=utf-8
+from pymongo import MongoClient
+from Constants import Constants
+import pprint
+
+class MistakesStats:
+
+    def __init__(self):
+        self.db = Constants.MONGO_CLIENT.Steam
+        pass
+
+    def count(self) :
+        pipeline = [{
+            "$group":{"_id":"$eId", "total":{"$avg":"$score"}, "count":{"$sum":1}}
+        }]
+        pprint.pprint(list(self.db.commits.aggregate(pipeline)))
+        pass
+
+if __name__ == "__main__":
+    ix = MistakesStats()
+    ix.count()
+
+
+import os
+from pymongo import MongoClient
+
+class Constants:
+    def __init__(self):
+        pass
+    MONGO_CLIENT = MongoClient('mongodb://'+str(os.environ["MONGO_URL"]))
